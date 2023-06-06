@@ -138,6 +138,8 @@
     <ClCompile Include="source\shaders\shader.cpp" />
     <ClCompile Include="source\FileHandler.cpp" />
     <ClCompile Include="source\gl hehehehe.cpp" />
+    <ClCompile Include="source\objects\VertexArrayObject.cpp" />
+    <ClCompile Include="source\objects\VertexBufferObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\GLEW\glew32.dll" />
@@ -188,6 +190,8 @@
     <ClInclude Include="dependencies\stb_image.h" />
     <ClInclude Include="source\shaders\shader.h" />
     <ClInclude Include="source\FileHandler.h" />
+    <ClInclude Include="source\objects\VertexArrayObject.h" />
+    <ClInclude Include="source\objects\VertexBufferObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\GLEW\glew32.lib" />
