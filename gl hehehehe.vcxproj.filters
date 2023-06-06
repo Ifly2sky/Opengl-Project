@@ -21,12 +21,13 @@
     <ClCompile Include="source\FileHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\shaders\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\Guitar, Loneliness and the Blue Planet - Guitar Tabs by KusaStrings.pdf" />
     <None Include="dependencies\GLEW\glew32.dll" />
-    <None Include="source\shaders\shader.frag" />
-    <None Include="source\shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\stb_image.h">
@@ -122,6 +123,9 @@
     <ClInclude Include="source\FileHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\shaders\shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\GLEW\glew32.lib" />
@@ -130,5 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="dependencies\glm\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="source\shaders\shader.frag" />
+    <CopyFileToFolders Include="source\shaders\shader.vert" />
   </ItemGroup>
 </Project>

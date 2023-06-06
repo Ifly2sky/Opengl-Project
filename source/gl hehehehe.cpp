@@ -6,6 +6,8 @@
 #include <GLEW/glew.h>
 #include <GLFW/glfw3.h>
 #include <shaders/shader.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 FileHandler file;
 Shader* shader;
@@ -37,14 +39,14 @@ int main()
         exit(1);
     }
 
-    std::cout << file.ReadAllText("shader.vert") << "\n";
-    std::cout << file.ReadAllText("shader.frag") << "\n";
+    /*std::cout << file.ReadAllText("shader.vert") << "\n";
+    std::cout << file.ReadAllText("shader.frag") << "\n";*/
     shader = new Shader(file.ReadAllText("shader.vert"), file.ReadAllText("shader.frag"));
 
     float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
+        -0.5f,  -0.5f, 0.0f,  0.0f, 0.0f,   // top right
+         0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   // bottom right
+         0.0f, 0.5f, 0.0f,   0.5f, 1.0f,   // bottom left
     };
 
     shader->Use();
@@ -57,8 +59,10 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -66,6 +70,32 @@ int main()
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
+
+    //garbage time -----------------------------------------------------------------------------------------------------------------------
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load and generate the texture
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load("Bidirectional.PNG", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    //garbage time end ------------------------------------------------------------------------------------------------------------------
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -78,7 +108,10 @@ int main()
         shader->Use();
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
         glDrawArrays(GL_TRIANGLES, 0, 3);
+
 
         glfwSwapBuffers(window);
 
