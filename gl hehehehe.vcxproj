@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\objects\ElementBufferObject.cpp" />
     <ClCompile Include="source\shaders\shader.cpp" />
     <ClCompile Include="source\FileHandler.cpp" />
     <ClCompile Include="source\gl hehehehe.cpp" />
@@ -188,6 +189,7 @@
     <ClInclude Include="dependencies\glm\vec4.hpp" />
     <ClInclude Include="dependencies\glm\vector_relational.hpp" />
     <ClInclude Include="dependencies\stb_image.h" />
+    <ClInclude Include="source\objects\ElementBufferObject.h" />
     <ClInclude Include="source\shaders\shader.h" />
     <ClInclude Include="source\FileHandler.h" />
     <ClInclude Include="source\objects\VertexArrayObject.h" />

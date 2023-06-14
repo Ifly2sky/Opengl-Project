@@ -10,6 +10,10 @@
 #include <stb_image.h>
 #include <objects/VertexArrayObject.h>
 #include <objects/VertexBufferObject.h>
+#include <objects/ElementBufferObject.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 FileHandler file;
 Shader* shader;
@@ -45,15 +49,26 @@ int main()
     std::cout << file.ReadAllText("shader.frag") << "\n";*/
     shader = new Shader(file.ReadAllText("shader.vert"), file.ReadAllText("shader.frag"));
 
-    float vertices[] = {
+    /*float vertices[] = {
         -0.5f,  -0.5f, 0.0f,  0.0f, 0.0f,   // top right
          0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   // bottom right
          0.0f, 0.5f, 0.0f,   0.5f, 1.0f,   // bottom left
+    };*/
+    float vertices[] = {
+        0.5f,  0.5f, 0.0f, 1.0f, 1.0f,  // top right
+        0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f// top left 
+    };
+    unsigned int indices[] = {  // note that we start from 0!
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
     };
 
     shader->Use();
     VertexArrayObject VAO = VertexArrayObject();
     VertexBufferObject VBO = VertexBufferObject(vertices, sizeof(vertices));
+    ElementBufferObject EBO = ElementBufferObject(indices, sizeof(indices));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -71,7 +86,7 @@ int main()
     // load and generate the texture
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load("Tino.png", &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load("Stone.png", &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -96,16 +111,18 @@ int main()
         shader->Use();
         VAO.Use();
         VBO.Use();
+        EBO.Use();
 
         glBindTexture(GL_TEXTURE_2D, texture);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
         glfwSwapBuffers(window);
 
         glfwPollEvents();
     }
+    glfwTerminate();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
