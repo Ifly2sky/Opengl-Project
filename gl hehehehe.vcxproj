@@ -135,6 +135,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Camera\Camera.cpp" />
     <ClCompile Include="source\objects\ElementBufferObject.cpp" />
     <ClCompile Include="source\shaders\shader.cpp" />
     <ClCompile Include="source\FileHandler.cpp" />
@@ -159,6 +160,7 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\Camera\Camera.h" />
     <ClInclude Include="dependencies\GLEW\eglew.h" />
     <ClInclude Include="dependencies\GLEW\glew.h" />
     <ClInclude Include="dependencies\GLEW\glxew.h" />
