@@ -18,6 +18,7 @@
 #include <thread>
 #include <chrono>
 #include <array>
+#include <objects/VertexData.h>
 
 using namespace std::chrono_literals;
 
@@ -27,7 +28,7 @@ Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0
 
 int width = 400, height = 400;
 bool isFullScreen = false;
-const int refreshrate = 100;
+const int refreshrate = 100000000;
 float  deltaTime, lastFrame;
 
 GLFWwindow* window;
@@ -61,22 +62,29 @@ int main()
 
     OnLoad();
 
-
     /*std::cout << file.ReadAllText("shader.vert") << "\n";
     std::cout << file.ReadAllText("shader.frag") << "\n";*/
     shader = new Shader(file.ReadAllText("shader.vert"), file.ReadAllText("shader.frag"));
 
-    /*float vertices[] = {
-        -0.5f,  -0.5f, 0.0f,  0.0f, 0.0f,    // top right
-         0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   // bottom right
-         0.0f, 0.5f, 0.0f,   0.5f, 1.0f,   // bottom left
-    };*/
     float vertices[] = {
         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
         -0.5f,  0.5f, 0.0f, 0.0f, 1.0f // top left 
     };
+    /*Vertex v1;
+    v1.Position = { 0.5f, 0.5f, 0.0f };
+    v1.TexCoordinates = { 1.0f, 1.0f };
+    Vertex v2;
+    v2.Position = { 0.5f, -0.5f, 0.0f };
+    v2.TexCoordinates = { 1.0f, 0.0f };
+    Vertex v3;
+    v3.Position = { -0.5f, -0.5f, 0.0f };
+    v3.TexCoordinates = { 0.0f, 0.0f };
+    Vertex v4;w
+    v3.Position = { -0.5f,  0.5f, 0.0f };
+    v3.TexCoordinates = { 0.0f, 1.0f };*/
+
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle

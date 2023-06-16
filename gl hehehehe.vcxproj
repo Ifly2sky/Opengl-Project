@@ -196,6 +196,7 @@
     <ClInclude Include="source\FileHandler.h" />
     <ClInclude Include="source\objects\VertexArrayObject.h" />
     <ClInclude Include="source\objects\VertexBufferObject.h" />
+    <ClInclude Include="source\objects\VertexData.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="dependencies\GLEW\glew32.lib" />
