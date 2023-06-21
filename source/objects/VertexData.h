@@ -1,6 +1,7 @@
+#pragma once
 #include <array>
 
-struct  Vertex
+struct Vertex
 {
     std::array<float, 3>Position;
     std::array<float, 2>TexCoordinates;
