@@ -40,6 +40,8 @@ int CheckKeys(int numero = 0);
 void OnLoad();
 void Init();
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+template<class Destination, class Copyables, class... type>
+Destination PatchVertices(Destination destination, Copyables first, Copyables second, type ... rest);
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -98,7 +100,9 @@ int main()
 
     Vertex finalVertices[4];
 
-    std::copy(vertices2.data(), vertices2.data() + vertices2.size(), finalVertices);
+    PatchVertices(finalVertices, vertices2.data(), vertices2.data()+ vertices2.size());
+
+    //std::copy(vertices2.data(), vertices2.data() + vertices2.size(), finalVertices);
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(finalVertices), finalVertices);
 
@@ -282,4 +286,12 @@ int CheckKeys(int numero)
 
     return 0;
 
+}
+template<class Destination, class Copyables, class... type>
+Destination PatchVertices(Destination destination, Copyables first, Copyables second, type ... rest) {
+    if (first == NULL) {
+        return destination;
+    }
+    std::copy(first, second, destination);
+    return destination;
 }
