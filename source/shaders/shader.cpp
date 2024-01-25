@@ -10,12 +10,13 @@
 
 Shader::Shader(const std::string vertexshadersource, const std::string fragmentshadersource)
 {
+	//VertexShader
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	const char* vertexshadersourcecharp = vertexshadersource.c_str();
 
-
 	glShaderSource(vertexShader, 1, &vertexshadersourcecharp, NULL);
 	glCompileShader(vertexShader);
+
 	int success;
 	char infoLog[512];
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
@@ -29,8 +30,10 @@ Shader::Shader(const std::string vertexshadersource, const std::string fragments
 	//FragmentShader
 	unsigned int fragmentShader = glCreateShader(GLenum(GL_FRAGMENT_SHADER));
 	const char* fragmenshadersourcecharp = fragmentshadersource.c_str();
+
 	glShaderSource(fragmentShader, 1, &fragmenshadersourcecharp, NULL);
 	glCompileShader(fragmentShader);
+
 	int success2;
 	char infolog2[512];
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success2);
@@ -46,8 +49,11 @@ Shader::Shader(const std::string vertexshadersource, const std::string fragments
 	glAttachShader(Handle, vertexShader);
 	glAttachShader(Handle, fragmentShader);
 	glLinkProgram(Handle);
+
+	//deletes vertex and fragment shader
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
 	int success3;
 	char infolog3[512];
 	glGetProgramiv(Handle, GL_LINK_STATUS, &success3);
@@ -85,7 +91,6 @@ void Shader::SetBool(std::string& name, bool value)
 		std::cout << "error setting bool  (" << name.c_str() << ")\n";
 	}
 }
-
 void Shader::SetFloat(std::string& name, float value)
 {
 	try
@@ -98,7 +103,6 @@ void Shader::SetFloat(std::string& name, float value)
 		std::cout << "error setting float  (" << name.c_str() << ")\n";
 	}
 }
-
 void Shader::SetInt(std::string name, int value)
 {
 	try
@@ -108,6 +112,17 @@ void Shader::SetInt(std::string name, int value)
 	catch (...)
 	{
 		std::cout << "error setting int  (" << name.c_str() << ")\n";
+	}
+}
+void Shader::SetVec3(std::string name, glm::vec3 value)
+{
+	try 
+	{
+		glUniform3fv(glGetUniformLocation(Handle, name.c_str()), 1, glm::value_ptr(value));
+	}
+	catch (...) 
+	{
+		std::cout << "error setting vec3 (" << name.c_str() << ")\n";
 	}
 }
 void Shader::SetMat4(std::string name, glm::mat4 value)

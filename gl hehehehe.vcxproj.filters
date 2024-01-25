@@ -38,8 +38,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="dependencies\Guitar, Loneliness and the Blue Planet - Guitar Tabs by KusaStrings.pdf" />
     <None Include="dependencies\GLEW\glew32.dll" />
+    <None Include="source\shaders\coloredCubeShader.vert" />
+    <None Include="source\shaders\coloredCubeShader.frag" />
+    <None Include="source\shaders\lightShader.vert" />
+    <None Include="source\shaders\lightShader.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\stb_image.h">

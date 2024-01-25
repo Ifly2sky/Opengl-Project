@@ -145,7 +145,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\GLEW\glew32.dll" />
-    <None Include="dependencies\Guitar, Loneliness and the Blue Planet - Guitar Tabs by KusaStrings.pdf" />
+    <None Include="source\shaders\coloredCubeShader.frag" />
+    <None Include="source\shaders\coloredCubeShader.vert" />
+    <None Include="source\shaders\lightShader.frag" />
+    <None Include="source\shaders\lightShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="source\shaders\shader.frag">

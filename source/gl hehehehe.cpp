@@ -23,7 +23,10 @@ using namespace std::chrono_literals;
 
 FileHandler file;
 Shader* shader;
+Shader* coloredCubeShader;
+Shader* lightShader;
 Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 int width = 400, height = 400;
 bool isFullScreen = false;
@@ -66,6 +69,13 @@ int main()
     /*std::cout << file.ReadAllText("shader.vert") << "\n";
     std::cout << file.ReadAllText("shader.frag") << "\n";*/
     shader = new Shader(file.ReadAllText("shader.vert"), file.ReadAllText("shader.frag"));
+    coloredCubeShader = new Shader(file.ReadAllText("coloredCubeShader.vert"), file.ReadAllText("coloredCubeshader.frag"));
+    lightShader = new Shader(file.ReadAllText("lightShader.vert"), file.ReadAllText("lightShader.frag"));
+
+    /*
+        lightingShader.use();
+        lightingShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        lightingShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);*/
 
     /*float vertices[] = {
         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
@@ -73,6 +83,51 @@ int main()
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
         -0.5f,  0.5f, 0.0f, 0.0f, 1.0f // top left
     };*/
+
+    float lightVertices[] = {
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+
+        -0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
+
+        -0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+    };
+
     Vertex v1{};
     v1.Position = { 0.5f, 0.5f, 0.0f };
     v1.TexCoordinates = { 1.0f, 1.0f };
@@ -94,9 +149,20 @@ int main()
     };
 
     shader->Use();
+    VertexArrayObject CubeVAO = VertexArrayObject();
     VertexArrayObject VAO = VertexArrayObject();
-    VertexBufferObject VBO = VertexBufferObject(vertices2.data());
-    ElementBufferObject EBO = ElementBufferObject(indices, sizeof(indices));
+    VertexBufferObject VBO = VertexBufferObject(lightVertices, sizeof(lightVertices));//vertices2.data());
+
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO.Handle);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    //ElementBufferObject EBO = ElementBufferObject(indices, sizeof(indices));
 
     Vertex finalVertices[4];
 
@@ -111,7 +177,7 @@ int main()
 
     //garbage time -----------------------------------------------------------------------------------------------------------------------
 
-    unsigned int texture;
+    /*unsigned int texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     // set the texture wrapping/filtering options (on the currently bound texture object)
@@ -132,7 +198,7 @@ int main()
     {
         std::cout << "Failed to load texture" << std::endl;
     }
-    stbi_image_free(data);
+    stbi_image_free(data);*/
 
     //garbage time end ------------------------------------------------------------------------------------------------------------------
 
@@ -149,6 +215,10 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(sin(glfwGetTime()), tan(glfwGetTime()), cos(glfwGetTime()), 1);
 
+        lightShader->Use();
+        lightShader->SetVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+        lightShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
         glm::mat4 model = glm::mat4(1.0);
         shader->SetMat4("model", model);
 
@@ -158,15 +228,26 @@ int main()
         auto projection = glm::perspective(glm::radians(fov), (float)width / (float)height, 0.001f, 1000000.0f);
         shader->SetMat4("projection", projection);
 
+        coloredCubeShader->Use();
+        coloredCubeShader->SetMat4("projection", projection);
+        coloredCubeShader->SetMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f));
+        coloredCubeShader->SetMat4("model", model);
+
         shader->Use();
         VAO.Use();
         VBO.Use();
-        EBO.Use();
+        //EBO.Use();
+        CubeVAO.Use();
 
-        glBindTexture(GL_TEXTURE_2D, texture);
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //glBindTexture(GL_TEXTURE_2D, texture);
 
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
 
