@@ -145,10 +145,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\GLEW\glew32.dll" />
-    <None Include="source\shaders\coloredCubeShader.frag" />
-    <None Include="source\shaders\coloredCubeShader.vert" />
-    <None Include="source\shaders\lightShader.frag" />
-    <None Include="source\shaders\lightShader.vert" />
+    <None Include="source\shaders\coloredCubeShader.frag">
+      <FileType>Document</FileType>
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="source\shaders\coloredCubeShader.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="source\shaders\lightShader.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="source\shaders\lightShader.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="source\shaders\shader.frag">
