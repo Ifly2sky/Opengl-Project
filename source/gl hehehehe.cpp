@@ -22,7 +22,7 @@
 using namespace std::chrono_literals;
 
 FileHandler file;
-Shader* shader;
+//Shader* shader;
 Shader* coloredCubeShader;
 Shader* lightShader;
 Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -68,7 +68,7 @@ int main()
 
     /*std::cout << file.ReadAllText("shader.vert") << "\n";
     std::cout << file.ReadAllText("shader.frag") << "\n";*/
-    shader = new Shader(file.ReadAllText("shader.vert"), file.ReadAllText("shader.frag"));
+    //shader = new Shader(file.ReadAllText("shader.vert"), file.ReadAllText("shader.frag"));
     coloredCubeShader = new Shader(file.ReadAllText("coloredCubeShader.vert"), file.ReadAllText("coloredCubeshader.frag"));
     lightShader = new Shader(file.ReadAllText("lightShader.vert"), file.ReadAllText("lightShader.frag"));
 
@@ -128,7 +128,7 @@ int main()
         -0.5f,  0.5f, -0.5f,
     };
 
-    Vertex v1{};
+    /*Vertex v1{};
     v1.Position = { 0.5f, 0.5f, 0.0f };
     v1.TexCoordinates = { 1.0f, 1.0f };
     Vertex v2{};
@@ -141,40 +141,24 @@ int main()
     v4.Position = { -0.5f,  0.5f, 0.0f };
     v4.TexCoordinates = { 0.0f, 1.0f };
 
-    static std::array<Vertex, 4> vertices2 = { v1, v2, v3, v4 };
+    static std::array<Vertex, 4> vertices2 = { v1, v2, v3, v4 };*/
 
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-    };
+    //unsigned int indices[] = {  // note that we start from 0!
+    //    0, 1, 3,   // first triangle
+    //    1, 2, 3    // second triangle
+    //};
 
-    shader->Use();
+    //shader->Use();
+    //coloredCubeShader->Use();
     VertexArrayObject CubeVAO = VertexArrayObject();
-    VertexArrayObject VAO = VertexArrayObject();
-    VertexBufferObject VBO = VertexBufferObject(lightVertices, sizeof(lightVertices));//vertices2.data());
-
-    unsigned int lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO.Handle);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    VertexBufferObject CubeVBO = VertexBufferObject(lightVertices, sizeof(lightVertices));
+    VertexArrayObject LightVAO = VertexArrayObject();
+    VertexBufferObject LightVBO = VertexBufferObject(lightVertices, sizeof(lightVertices));
 
     //ElementBufferObject EBO = ElementBufferObject(indices, sizeof(indices));
-
-    Vertex finalVertices[4];
-
-    PatchVertices(finalVertices, vertices2.data(), vertices2.data()+ vertices2.size());
-
+    //Vertex finalVertices[4];
+    //PatchVertices(finalVertices, vertices2.data(), vertices2.data()+ vertices2.size());
     //std::copy(vertices2.data(), vertices2.data() + vertices2.size(), finalVertices);
-
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(finalVertices), finalVertices);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
     //garbage time -----------------------------------------------------------------------------------------------------------------------
 
     /*unsigned int texture;
@@ -211,38 +195,34 @@ int main()
         lastFrame = currentFrame;
 
         CheckKeys();
-
-        glClear(GL_COLOR_BUFFER_BIT);
-        glClearColor(sin(glfwGetTime()), tan(glfwGetTime()), cos(glfwGetTime()), 1);
-
-        lightShader->Use();
-        lightShader->SetVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-        lightShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-
-        glm::mat4 model = glm::mat4(1.0);
-        shader->SetMat4("model", model);
-
-        auto view = camera->GetView();
-        shader->SetMat4("view", view);
-
-        auto projection = glm::perspective(glm::radians(fov), (float)width / (float)height, 0.001f, 1000000.0f);
-        shader->SetMat4("projection", projection);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         coloredCubeShader->Use();
-        coloredCubeShader->SetMat4("projection", projection);
+        coloredCubeShader->SetVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+        coloredCubeShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        glm::mat4 model = glm::mat4(1.0);
+        coloredCubeShader->SetMat4("model", model);
+
+        auto view = camera->GetView();
         coloredCubeShader->SetMat4("view", view);
+
+        auto projection = glm::perspective(glm::radians(fov), (float)width / (float)height, 0.0001f, 1000000.0f);
+        coloredCubeShader->SetMat4("projection", projection);
+
+        CubeVAO.Use();//glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        lightShader->Use();
+        lightShader->SetMat4("projection", projection);
+        lightShader->SetMat4("view", view);
         model = glm::mat4(1.0f);
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f));
-        coloredCubeShader->SetMat4("model", model);
+        lightShader->SetMat4("model", model);
 
-        shader->Use();
-        VAO.Use();
-        VBO.Use();
-        //EBO.Use();
-        CubeVAO.Use();
-
-        glBindVertexArray(lightVAO);
+        LightVAO.Use();//glBindVertexArray(lightCubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         //glBindTexture(GL_TEXTURE_2D, texture);
@@ -290,18 +270,17 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void OnLoad() 
 {
     Init();
-    //glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_POLYGON_OFFSET_LINE);
-    //glPolygonOffset(-1, -1);
-    //glDepthFunc(GL_LESS);
-    //glDepthRange(0.0f, 1.0f);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_POLYGON_OFFSET_LINE);
+    glPolygonOffset(-1, -1);
+    glDepthFunc(GL_LESS);
+    glDepthRange(0.0f, 1.0f);
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 }
 void Init()
 {

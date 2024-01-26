@@ -42,7 +42,6 @@ void Camera::processmouseinput(float xoffset, float yoffset)
     yoffset *= mousesensitivity;
     yaw += xoffset;
     pitch += yoffset;
-    std::cout << pitch << std::endl;
     if (pitch > 89.0f)
         pitch = 89.0f;
     if (pitch < -89.0f)

@@ -17,7 +17,7 @@ enum Camera_Movement {
 class Camera
 {
 public:
-    float MovementSpeed = 50.0f;
+    float MovementSpeed = 5.0f;
     float mousesensitivity = 0.1f;
 
 
