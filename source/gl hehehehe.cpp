@@ -229,9 +229,7 @@ int main()
     stbi_image_free(data);*/
 
     //garbage time end ------------------------------------------------------------------------------------------------------------------
-    coloredCubeShader->Use();
-    coloredCubeShader->SetVec3("lightPos", lightPos);
-
+    
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     while (!glfwWindowShouldClose(window))
@@ -248,6 +246,7 @@ int main()
         coloredCubeShader->SetVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
         coloredCubeShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
         coloredCubeShader->SetVec3("viewPos", camera->Position);
+        coloredCubeShader->SetVec3("lightPos", lightPos);
 
         glm::mat4 model = glm::mat4(1.0);
         coloredCubeShader->SetMat4("model", model);
