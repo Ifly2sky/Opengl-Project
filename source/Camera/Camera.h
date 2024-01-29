@@ -19,6 +19,7 @@ class Camera
 public:
     float MovementSpeed = 5.0f;
     float mousesensitivity = 0.1f;
+    glm::vec3 Position = glm::vec3(0.0f, 0.0f, 3.0f);
 
 
     Camera(glm::vec3 camera_position, glm::vec3 camera_up);
@@ -28,7 +29,6 @@ public:
 
 private:
     void updatevectors();
-    glm::vec3 Position = glm::vec3(0.0f, 0.0f, 3.0f);
     glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
     glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
     glm::vec3 Right;

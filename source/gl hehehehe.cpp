@@ -127,6 +127,49 @@ int main()
         -0.5f,  0.5f,  0.5f,
         -0.5f,  0.5f, -0.5f,
     };
+    float cubeVertices[] = {
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    };
 
     /*Vertex v1{};
     v1.Position = { 0.5f, 0.5f, 0.0f };
@@ -150,10 +193,11 @@ int main()
 
     //shader->Use();
     //coloredCubeShader->Use();
+
     VertexArrayObject CubeVAO = VertexArrayObject();
-    VertexBufferObject CubeVBO = VertexBufferObject(lightVertices, sizeof(lightVertices));
+    VertexBufferObject CubeVBO = VertexBufferObject(cubeVertices, sizeof(cubeVertices), { 3, 3 }, 6 * sizeof(float), { 0, 3 * sizeof(float) });
     VertexArrayObject LightVAO = VertexArrayObject();
-    VertexBufferObject LightVBO = VertexBufferObject(lightVertices, sizeof(lightVertices));
+    VertexBufferObject LightVBO = VertexBufferObject(lightVertices, sizeof(lightVertices), { 3 }, 3 * sizeof(float), { 0 });
 
     //ElementBufferObject EBO = ElementBufferObject(indices, sizeof(indices));
     //Vertex finalVertices[4];
@@ -185,6 +229,8 @@ int main()
     stbi_image_free(data);*/
 
     //garbage time end ------------------------------------------------------------------------------------------------------------------
+    coloredCubeShader->Use();
+    coloredCubeShader->SetVec3("lightPos", lightPos);
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -201,6 +247,7 @@ int main()
         coloredCubeShader->Use();
         coloredCubeShader->SetVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
         coloredCubeShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        coloredCubeShader->SetVec3("viewPos", camera->Position);
 
         glm::mat4 model = glm::mat4(1.0);
         coloredCubeShader->SetMat4("model", model);
