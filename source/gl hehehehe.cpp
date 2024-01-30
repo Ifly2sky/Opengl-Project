@@ -27,6 +27,7 @@ Shader* coloredCubeShader;
 Shader* lightShader;
 Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 cubePos(0.0f, 0.0f, 0.0f);
 
 int width = 400, height = 400;
 bool isFullScreen = false;
@@ -238,6 +239,12 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
+        glm::vec3 dist = -cubePos + lightPos;
+        lightPos += glm::vec3(-dist.x, dist.y, dist.z) * 0.5f * deltaTime;
+        if (dist.length() > 10) {
+            lightPos += dist * 100.0f * deltaTime;
+        }
+
         CheckKeys();
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -249,6 +256,7 @@ int main()
         coloredCubeShader->SetVec3("lightPos", lightPos);
 
         glm::mat4 model = glm::mat4(1.0);
+        model = glm::translate(model, cubePos);
         coloredCubeShader->SetMat4("model", model);
 
         auto view = camera->GetView();
