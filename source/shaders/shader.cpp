@@ -91,16 +91,16 @@ void Shader::SetBool(std::string& name, bool value)
 		std::cout << "error setting bool  (" << name.c_str() << ")\n";
 	}
 }
-void Shader::SetFloat(std::string& name, float value)
+void Shader::SetFloat(const char* name, float value)
 {
 	try
 	{
-		glUniform1f(glGetUniformLocation(Handle, name.c_str()), value);
+		glUniform1f(glGetUniformLocation(Handle, name), value);
 
 	}
 	catch (...)
 	{
-		std::cout << "error setting float  (" << name.c_str() << ")\n";
+		std::cout << "error setting float  (" << name << ")\n";
 	}
 }
 void Shader::SetInt(std::string name, int value)

@@ -29,7 +29,7 @@ Camera* camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 glm::vec3 cubePos(0.0f, 0.0f, 0.0f);
 
-int width = 400, height = 400;
+int width = 1000, height = 800;
 bool isFullScreen = false;
 const int refreshrate = 100;
 float  deltaTime, lastFrame;
@@ -231,6 +231,16 @@ int main()
 
     //garbage time end ------------------------------------------------------------------------------------------------------------------
     
+
+    coloredCubeShader->Use();
+    coloredCubeShader->SetVec3("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+    coloredCubeShader->SetVec3("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+    coloredCubeShader->SetVec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    coloredCubeShader->SetFloat("material.shininess", 32.0f);
+    coloredCubeShader->SetVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+    coloredCubeShader->SetVec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+    coloredCubeShader->SetVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     while (!glfwWindowShouldClose(window))
@@ -239,11 +249,14 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        glm::vec3 dist = -cubePos + lightPos;
-        lightPos += glm::vec3(-dist.x, dist.y, dist.z) * 0.5f * deltaTime;
-        if (dist.length() > 10) {
-            lightPos += dist * 100.0f * deltaTime;
-        }
+        //get distance from lcube to light
+        glm::vec3 dist = cubePos - lightPos;
+        //calculate rotation of 90 degrees
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 1.0f));
+        glm::vec4 result = trans * glm::vec4(dist, 1.0f);
+        //apply move object
+        lightPos += glm::vec3(result.x, result.y, result.z) * 0.5f * deltaTime;
 
         CheckKeys();
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
