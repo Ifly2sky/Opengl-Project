@@ -237,9 +237,6 @@ int main()
     coloredCubeShader->SetVec3("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
     coloredCubeShader->SetVec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
     coloredCubeShader->SetFloat("material.shininess", 32.0f);
-    coloredCubeShader->SetVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-    coloredCubeShader->SetVec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-    coloredCubeShader->SetVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -259,12 +256,21 @@ int main()
         lightPos += glm::vec3(result.x, result.y, result.z) * 0.5f * deltaTime;
 
         CheckKeys();
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         coloredCubeShader->Use();
         coloredCubeShader->SetVec3("viewPos", camera->Position);
         coloredCubeShader->SetVec3("lightPos", lightPos);
+
+        glm::vec3 lightColor;
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+
+        coloredCubeShader->SetVec3("light.ambient", lightColor * 0.2f);
+        coloredCubeShader->SetVec3("light.diffuse", lightColor * 0.5f);
+        coloredCubeShader->SetVec3("light.specular", lightColor * 1.0f);
 
         glm::mat4 model = glm::mat4(1.0);
         model = glm::translate(model, cubePos);
@@ -286,6 +292,7 @@ int main()
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f));
         lightShader->SetMat4("model", model);
+        lightShader->SetVec3("lightColor", lightColor);
 
         LightVAO.Use();//glBindVertexArray(lightCubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
