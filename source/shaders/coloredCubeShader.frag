@@ -17,8 +17,7 @@ out vec4 FragColor;
 
 uniform Light light;
 uniform Material material;
-uniform vec3 objectColor;
-uniform vec3 lightPo
+uniform vec3 lightPos;
 uniform vec3 viewPos;
 
 in vec3 FragPos;

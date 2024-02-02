@@ -263,8 +263,6 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         coloredCubeShader->Use();
-        coloredCubeShader->SetVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-        coloredCubeShader->SetVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
         coloredCubeShader->SetVec3("viewPos", camera->Position);
         coloredCubeShader->SetVec3("lightPos", lightPos);
 
