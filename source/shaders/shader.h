@@ -16,5 +16,6 @@ public:
     void SetBool(std::string& name, bool value);
     void SetFloat(const char* name, float value);
     void SetVec3(std::string name, glm::vec3 value);
+    void SetVec4(const char* name, glm::vec4 value);
     void SetMat4(std::string name, glm::mat4 value);
 };

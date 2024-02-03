@@ -136,3 +136,14 @@ void Shader::SetMat4(std::string name, glm::mat4 value)
 		std::cout << "error setting mat4  (" << name.c_str() << ")\n";
 	}
 }
+void Shader::SetVec4(const char* name, glm::vec4 value)
+{
+	try
+	{
+		glUniform4fv(glGetUniformLocation(Handle, name), 1, glm::value_ptr(value));
+	}
+	catch (...)
+	{
+		std::cout << "error setting vec3 (" << name << ")\n";
+	}
+}

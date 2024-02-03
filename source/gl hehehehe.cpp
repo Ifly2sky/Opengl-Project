@@ -172,6 +172,18 @@ int main()
         -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
+    glm::vec3 cubePositions[] = {
+    glm::vec3(0.0f,  0.0f,  0.0f),
+    glm::vec3(2.0f,  5.0f, -15.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3(2.4f, -0.4f, -3.5f),
+    glm::vec3(-1.7f,  3.0f, -7.5f),
+    glm::vec3(1.3f, -2.0f, -2.5f),
+    glm::vec3(1.5f,  2.0f, -2.5f),
+    glm::vec3(1.5f,  0.2f, -1.5f),
+    glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
 
     /*Vertex v1{};
     v1.Position = { 0.5f, 0.5f, 0.0f };
@@ -252,10 +264,10 @@ int main()
         coloredCubeShader->SetVec3("light.ambient", lightColor * 0.2f);
         coloredCubeShader->SetVec3("light.diffuse", lightColor * 0.5f);
         coloredCubeShader->SetVec3("light.specular", lightColor * 1.0f);
-
-        glm::mat4 model = glm::mat4(1.0);
-        model = glm::translate(model, cubePos);
-        coloredCubeShader->SetMat4("model", model);
+        coloredCubeShader->SetVec4("light.vector", glm::vec4(-0.2f, -1.0f, -0.3f, 1.0f));
+        coloredCubeShader->SetFloat("light.constant", 1.0f);
+        coloredCubeShader->SetFloat("light.linear", 0.09f);
+        coloredCubeShader->SetFloat("light.quadratic", 0.032f);
 
         auto view = camera->GetView();
         coloredCubeShader->SetMat4("view", view);
@@ -270,7 +282,17 @@ int main()
         glBindTexture(GL_TEXTURE_2D, specularMap);
 
         CubeVAO.Use();//glBindVertexArray(cubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glm::mat4 model;
+        for (unsigned int i = 0; i < 10; i++) {
+            model = glm::mat4(1.0);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            coloredCubeShader->SetMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
 
         lightShader->Use();
         lightShader->SetMat4("projection", projection);
