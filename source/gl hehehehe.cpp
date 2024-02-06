@@ -230,6 +230,8 @@ int main()
     coloredCubeShader->SetFloat("material.shininess", 64.0f);
     coloredCubeShader->SetInt("material.specular", 1);
     coloredCubeShader->SetInt("material.diffuse", 0);
+    coloredCubeShader->SetFloat("light.cutOff", glm::cos(glm::radians(30.0f)));
+    coloredCubeShader->SetFloat("light.outerCutOff", glm::cos(glm::radians(35.0f)));
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -254,7 +256,7 @@ int main()
 
         coloredCubeShader->Use();
         coloredCubeShader->SetVec3("viewPos", camera->Position);
-        coloredCubeShader->SetVec3("lightPos", lightPos);
+        coloredCubeShader->SetVec3("lightPos", camera->Position);
 
         glm::vec3 lightColor;
         lightColor.x = 1.0f;//sin(glfwGetTime() * 2.0f);
@@ -264,10 +266,12 @@ int main()
         coloredCubeShader->SetVec3("light.ambient", lightColor * 0.2f);
         coloredCubeShader->SetVec3("light.diffuse", lightColor * 0.5f);
         coloredCubeShader->SetVec3("light.specular", lightColor * 1.0f);
-        coloredCubeShader->SetVec4("light.vector", glm::vec4(-0.2f, -1.0f, -0.3f, 1.0f));
         coloredCubeShader->SetFloat("light.constant", 1.0f);
         coloredCubeShader->SetFloat("light.linear", 0.09f);
         coloredCubeShader->SetFloat("light.quadratic", 0.032f);
+
+        coloredCubeShader->SetVec4("light.position", glm::vec4(camera->Position, 1.0f));
+        coloredCubeShader->SetVec3("light.direction", camera->Front);
 
         auto view = camera->GetView();
         coloredCubeShader->SetMat4("view", view);
