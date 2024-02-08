@@ -173,16 +173,23 @@ int main()
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
     glm::vec3 cubePositions[] = {
-    glm::vec3(0.0f,  0.0f,  0.0f),
-    glm::vec3(2.0f,  5.0f, -15.0f),
-    glm::vec3(-1.5f, -2.2f, -2.5f),
-    glm::vec3(-3.8f, -2.0f, -12.3f),
-    glm::vec3(2.4f, -0.4f, -3.5f),
-    glm::vec3(-1.7f,  3.0f, -7.5f),
-    glm::vec3(1.3f, -2.0f, -2.5f),
-    glm::vec3(1.5f,  2.0f, -2.5f),
-    glm::vec3(1.5f,  0.2f, -1.5f),
-    glm::vec3(-1.3f,  1.0f, -1.5f)
+        glm::vec3(0.0f,  0.0f,  0.0f),
+        glm::vec3(2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3(2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3(1.3f, -2.0f, -2.5f),
+        glm::vec3(1.5f,  2.0f, -2.5f),
+        glm::vec3(1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
+    };
+    // positions of the point lights
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3(0.7f,  0.2f,  2.0f),
+        glm::vec3(2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3(0.0f,  0.0f, -3.0f)
     };
 
     /*Vertex v1{};
@@ -230,8 +237,6 @@ int main()
     coloredCubeShader->SetFloat("material.shininess", 64.0f);
     coloredCubeShader->SetInt("material.specular", 1);
     coloredCubeShader->SetInt("material.diffuse", 0);
-    coloredCubeShader->SetFloat("light.cutOff", glm::cos(glm::radians(30.0f)));
-    coloredCubeShader->SetFloat("light.outerCutOff", glm::cos(glm::radians(35.0f)));
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -256,22 +261,59 @@ int main()
 
         coloredCubeShader->Use();
         coloredCubeShader->SetVec3("viewPos", camera->Position);
-        coloredCubeShader->SetVec3("lightPos", camera->Position);
 
         glm::vec3 lightColor;
         lightColor.x = 1.0f;//sin(glfwGetTime() * 2.0f);
         lightColor.y = 1.0f;//sin(glfwGetTime() * 0.7f);
         lightColor.z = 1.0f;//sin(glfwGetTime() * 1.3f);
 
-        coloredCubeShader->SetVec3("light.ambient", lightColor * 0.2f);
-        coloredCubeShader->SetVec3("light.diffuse", lightColor * 0.5f);
-        coloredCubeShader->SetVec3("light.specular", lightColor * 1.0f);
-        coloredCubeShader->SetFloat("light.constant", 1.0f);
-        coloredCubeShader->SetFloat("light.linear", 0.09f);
-        coloredCubeShader->SetFloat("light.quadratic", 0.032f);
+        coloredCubeShader->SetVec3("spotLight.ambient", lightColor * 0.2f);
+        coloredCubeShader->SetVec3("spotLight.diffuse", lightColor * 0.5f);
+        coloredCubeShader->SetVec3("spotLight.specular", lightColor * 1.0f);
+        coloredCubeShader->SetFloat("spotLight.constant", 1.0f);
+        coloredCubeShader->SetFloat("spotLight.linear", 0.09f);
+        coloredCubeShader->SetFloat("spotLight.quadratic", 0.032f);
+        coloredCubeShader->SetVec3("spotLight.position", glm::vec3(camera->Position));
+        coloredCubeShader->SetVec3("spotLight.direction", camera->Front);
+        coloredCubeShader->SetFloat("spotLight.innerCutOff", glm::cos(glm::radians(25.0f)));
+        coloredCubeShader->SetFloat("spotLight.outerCutOff", glm::cos(glm::radians(35.0f)));
 
-        coloredCubeShader->SetVec4("light.position", glm::vec4(camera->Position, 1.0f));
-        coloredCubeShader->SetVec3("light.direction", camera->Front);
+        coloredCubeShader->SetVec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+        coloredCubeShader->SetVec3("dirLight.ambient", lightColor * 0.05f);
+        coloredCubeShader->SetVec3("dirLight.diffuse", lightColor * 0.4f);
+        coloredCubeShader->SetVec3("dirLight.specular", lightColor * 0.5f);
+
+        coloredCubeShader->SetVec3("pointLights[0].position", pointLightPositions[0]);
+        coloredCubeShader->SetVec3("pointLights[0].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        coloredCubeShader->SetVec3("pointLights[0].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        coloredCubeShader->SetVec3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        coloredCubeShader->SetFloat("pointLights[0].constant", 1.0f);
+        coloredCubeShader->SetFloat("pointLights[0].linear", 0.09f);
+        coloredCubeShader->SetFloat("pointLights[0].quadratic", 0.032f);
+
+        coloredCubeShader->SetVec3("pointLights[1].position", pointLightPositions[1]);
+        coloredCubeShader->SetVec3("pointLights[1].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        coloredCubeShader->SetVec3("pointLights[1].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        coloredCubeShader->SetVec3("pointLights[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        coloredCubeShader->SetFloat("pointLights[1].constant", 1.0f);
+        coloredCubeShader->SetFloat("pointLights[1].linear", 0.09f);
+        coloredCubeShader->SetFloat("pointLights[1].quadratic", 0.032f);
+
+        coloredCubeShader->SetVec3("pointLights[2].position", pointLightPositions[2]);
+        coloredCubeShader->SetVec3("pointLights[2].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        coloredCubeShader->SetVec3("pointLights[2].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        coloredCubeShader->SetVec3("pointLights[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        coloredCubeShader->SetFloat("pointLights[2].constant", 1.0f);
+        coloredCubeShader->SetFloat("pointLights[2].linear", 0.09f);
+        coloredCubeShader->SetFloat("pointLights[2].quadratic", 0.032f);
+
+        coloredCubeShader->SetVec3("pointLights[3].position", pointLightPositions[3]);
+        coloredCubeShader->SetVec3("pointLights[3].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        coloredCubeShader->SetVec3("pointLights[3].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        coloredCubeShader->SetVec3("pointLights[3].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        coloredCubeShader->SetFloat("pointLights[3].constant", 1.0f);
+        coloredCubeShader->SetFloat("pointLights[3].linear", 0.09f);
+        coloredCubeShader->SetFloat("pointLights[3].quadratic", 0.032f);
 
         auto view = camera->GetView();
         coloredCubeShader->SetMat4("view", view);
@@ -301,14 +343,17 @@ int main()
         lightShader->Use();
         lightShader->SetMat4("projection", projection);
         lightShader->SetMat4("view", view);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f));
-        lightShader->SetMat4("model", model);
         lightShader->SetVec3("lightColor", lightColor);
 
+        
         LightVAO.Use();//glBindVertexArray(lightCubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for (unsigned int i = 0; i < 4; i++) {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, pointLightPositions[i]);
+            model = glm::scale(model, glm::vec3(0.2f));
+            lightShader->SetMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
