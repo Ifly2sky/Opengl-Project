@@ -39,10 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dependencies\GLEW\glew32.dll" />
-    <None Include="source\shaders\coloredCubeShader.vert" />
-    <None Include="source\shaders\coloredCubeShader.frag" />
-    <None Include="source\shaders\lightShader.vert" />
-    <None Include="source\shaders\lightShader.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\stb_image.h">
@@ -168,5 +164,9 @@
   <ItemGroup>
     <CopyFileToFolders Include="source\shaders\shader.frag" />
     <CopyFileToFolders Include="source\shaders\shader.vert" />
+    <CopyFileToFolders Include="source\shaders\lightShader.frag" />
+    <CopyFileToFolders Include="source\shaders\lightShader.vert" />
+    <CopyFileToFolders Include="source\shaders\coloredCubeShader.frag" />
+    <CopyFileToFolders Include="source\shaders\coloredCubeShader.vert" />
   </ItemGroup>
 </Project>
